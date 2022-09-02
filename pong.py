@@ -1,18 +1,17 @@
-# TODO: add endgame.screen
-# FIXME: collision physics
+# FIXME: side collision physics
 import sys
 
 import pygame
 
+import random
 
 class Ball:
-    speed_y = 0
-
     def __init__(self, x, y, radius):
         self.x = x
         self.y = y
         self.radius = radius
-        self.speed_x = 10
+        self.speed_x = game.ball_speed
+        self.speed_y = 0
 
     def move(self):
         self.x += self.speed_x
@@ -23,12 +22,13 @@ class Ball:
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
 
     def check_collision(self):
-        if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y <= self.y <= game.platform.y + game.platform.height:
+        if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
             self.speed_y += game.platform.velocity // 5
-        elif game.platform1.x <= self.x + self.radius >= game.platform1.x and game.platform1.y <= self.y <= game.platform1.y + game.platform1.height:
+        elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
             self.speed_y += game.platform1.velocity // 5
+
         if self.y - self.radius <= 0 or self.y + self.radius >= game.screen_height:
             self.speed_y *= -1
         if self.x + self.radius >= game.screen_length:
@@ -81,7 +81,8 @@ class Game:
         self.platform_length = platform_length
         self.platform_height = platform_height
         self.speed = speed
-        self.platform_speed = speed // 5
+        self.platform_speed = 10
+        self.ball_speed = 10
 
     def setup(self):
         self.platform = Platform(self.gap, self.platform_length, self.platform_height)
@@ -142,7 +143,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(10, 10, 100, 60)
+    game = Game(50, 10, 100, 60)
     game.setup()
     while True:
         game.screen.fill(0x000000)
