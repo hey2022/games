@@ -1,4 +1,3 @@
-# FIXME: side collision physics
 import sys
 
 import pygame
@@ -7,10 +6,12 @@ import random
 
 class Ball:
     def __init__(self, x, y, radius):
+        self.rotate = 0
+        self.maxspeed = game.ball_speed*1.5
         self.x = x
         self.y = y
         self.radius = radius
-        self.speed_x = game.ball_speed
+        self.speed_x = (1-random.randint(0,1)*2)*game.ball_speed
         self.speed_y = 0
 
     def move(self):
@@ -20,15 +21,16 @@ class Ball:
 
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
-
+    def get_v(self):
+        return (self.x*self.x+self.y*self.y)**(0.5)
     def check_collision(self):
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
-            self.speed_y += game.platform.velocity // 5
+            self.speed_y = game.platform.velocity // 5 + self.speed_y/1.5
         elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
-            self.speed_y += game.platform1.velocity // 5
-
+            self.speed_y = game.platform1.velocity // 5 + self.speed_y/1.5
+            pass
         if self.y - self.radius <= 0 or self.y + self.radius >= game.screen_height:
             self.speed_y *= -1
         if self.x + self.radius >= game.screen_length:
@@ -123,7 +125,7 @@ class Game:
 
     def display_score(self):
         score_box = self.small.render(f"{self.score[0]} : {self.score[1]}", True, 0xffffff00)
-        score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 2))
+        score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 8))
         self.screen.blit(score_box, score_rect)
 
     def move(self):
