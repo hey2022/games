@@ -1,8 +1,8 @@
+import random
 import sys
 
 import pygame
 
-import random
 
 class JameyBot:
     def __init__(self):
@@ -35,45 +35,51 @@ class JameyBot:
             speed = -game.platform_speed
         game.platform1.velocity = speed
 
+
 class Ball:
     def __init__(self, x, y, radius):
         self.rotate = 0
-        self.minspeed = game.ball_speed/1.8
+        self.min_speed = game.ball_speed / 1.8
         self.x = x
         self.y = y
         self.radius = radius
-        self.speed_x = (1-random.randint(0,1)*2)*game.ball_speed
+        self.speed_x = (1 - random.randint(0, 1) * 2) * game.ball_speed
         self.speed_y = 0
-        self.rotatehelp = 0
+        self.rotate_help = 0
+
     def move(self):
         self.x += self.speed_x
         self.y += self.speed_y
-        if(abs(self.speed_x)<abs(self.speed_y/2)):
-            self.speed_x*=1.1
+        if abs(self.speed_x) < abs(self.speed_y / 2):
+            self.speed_x *= 1.1
         self.check_collision()
-        if(self.speed_x>0 and self.speed_x<self.minspeed):
-            self.speed_x=self.minspeed
-        if(self.speed_x<=0 and self.speed_x>-self.minspeed):
-            self.speed_x=self.minspeed
+        if 0 < self.speed_x < self.min_speed:
+            self.speed_x = self.min_speed
+        if 0 >= self.speed_x > -self.min_speed:
+            self.speed_x = self.min_speed
+
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
-        pygame.draw.aaline(game.screen,0xffffff,(self.x,self.y),(self.x+self.speed_x*3,self.y+self.speed_y*3))
+        pygame.draw.aaline(game.screen, 0xffffff, (self.x, self.y),
+                           (self.x + self.speed_x * 3, self.y + self.speed_y * 3))
+
     def get_v(self):
-        return (self.x*self.x+self.y*self.y)**(0.5)
+        return (self.x * self.x + self.y * self.y) ** 0.5
+
     def check_collision(self):
         is_b = 0
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
-            self.speed_y = game.platform.velocity // 5 + self.speed_y/1.05
-            self.rotate = -game.platform.velocity+self.rotate/2
+            self.speed_y = game.platform.velocity // 5 + self.speed_y / 1.05
+            self.rotate = -game.platform.velocity + self.rotate / 2
             is_b = 1
-            
+
         elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
-            self.speed_y = game.platform1.velocity // 5 + self.speed_y/1.05
-            self.rotate = game.platform1.velocity+self.rotate/2
+            self.speed_y = game.platform1.velocity // 5 + self.speed_y / 1.05
+            self.rotate = game.platform1.velocity + self.rotate / 2
             is_b = 1
-            
+
             pass
         if self.y - self.radius <= 0:
             self.speed_y *= -1
@@ -88,8 +94,9 @@ class Ball:
             game.score[1] += 1
             game.setup()
             pass
-        if(is_b!=0):
+        if is_b != 0:
             self.rotate /= 1.3
+
 
 class Platform:
     velocity = 0
