@@ -56,7 +56,7 @@ class Ball:
         if 0 < self.speed_x < self.min_speed:
             self.speed_x = self.min_speed
         if 0 >= self.speed_x > -self.min_speed:
-            self.speed_x = self.min_speed
+            self.speed_x = -self.min_speed
 
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
