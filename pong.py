@@ -1,10 +1,8 @@
-# FIXME: side collision physics
-# TODO: Spin
-# TODO: Prevent infinite vertical speed
 import sys
 
 import pygame
 
+import random
 
 class JameyBot:
     def __init__(self):
@@ -39,44 +37,66 @@ class JameyBot:
 
 class Ball:
     def __init__(self, x, y, radius):
+        self.rotate = 0
+        self.minspeed = game.ball_speed/1.8
         self.x = x
         self.y = y
         self.radius = radius
-        self.speed_x = -game.ball_speed
+        self.speed_x = (1-random.randint(0,1)*2)*game.ball_speed
         self.speed_y = 0
-
+        self.rotatehelp = 0
     def move(self):
         self.x += self.speed_x
         self.y += self.speed_y
+        if(abs(self.speed_x)<abs(self.speed_y/2)):
+            self.speed_x*=1.1
         self.check_collision()
-
+        if(self.speed_x>0 and self.speed_x<self.minspeed):
+            self.speed_x=self.minspeed
+        if(self.speed_x<=0 and self.speed_x>-self.minspeed):
+            self.speed_x=self.minspeed
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
-
+        pygame.draw.aaline(game.screen,0xffffff,(self.x,self.y),(self.x+self.speed_x*3,self.y+self.speed_y*3))
+    def get_v(self):
+        return (self.x*self.x+self.y*self.y)**(0.5)
     def check_collision(self):
-        if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius <= self.y <= game.platform.y + game.platform.height + self.radius:
+        is_b = 0
+        if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
-            self.speed_y += game.platform.velocity // 5
-        elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius <= self.y <= game.platform1.y + game.platform1.height + self.radius:
+            self.speed_y = game.platform.velocity // 5 + self.speed_y/1.05
+            self.rotate = -game.platform.velocity+self.rotate/2
+            is_b = 1
+            
+        elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
-            self.speed_y += game.platform1.velocity // 5
-
-        if self.y - self.radius <= 0 or self.y + self.radius >= game.screen_height:
+            self.speed_y = game.platform1.velocity // 5 + self.speed_y/1.05
+            self.rotate = game.platform1.velocity+self.rotate/2
+            is_b = 1
+            
+            pass
+        if self.y - self.radius <= 0:
             self.speed_y *= -1
+            is_b = 1
+        if self.y + self.radius >= game.screen_height:
+            self.speed_y *= -1
+            is_b = 1
         if self.x + self.radius >= game.screen_length:
             game.score[0] += 1
             game.setup()
         if self.x - self.radius <= 0:
             game.score[1] += 1
             game.setup()
-
+            pass
+        if(is_b!=0):
+            self.rotate /= 1.3
 
 class Platform:
     velocity = 0
 
     def __init__(self, x, length, height):
         self.x = x
-        self.y = game.screen_height // 2 - height // 2
+        self.y = game.screen_height // 2 - game.platform_height // 2
         self.length = length
         self.height = height
 
@@ -155,7 +175,7 @@ class Game:
 
     def display_score(self):
         score_box = self.small.render(f"{self.score[0]} : {self.score[1]}", True, 0xffffff00)
-        score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 2))
+        score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 8))
         self.screen.blit(score_box, score_rect)
 
     def move(self):
