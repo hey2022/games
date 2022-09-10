@@ -7,24 +7,24 @@ import pygame
 class JameyBot:
     def __init__(self):
         self.trajectory = game.screen_height // 2
+        self.platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
 
     def predict_trajectory(self):
-        if game.ball.speed_x < 0:
+        if game.ball.speed_x <= 0:
             self.trajectory = game.screen_height // 2
         else:
-            platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
             self.trajectory = game.ball.y
             temp_ball_speed_y = game.ball.speed_y
-            for i in range(game.ball.x, platform_x + 1, game.ball.speed_x):
+            for i in range(game.ball.x, self.platform_x + 1, game.ball.speed_x):
                 if self.trajectory + game.ball.radius >= game.screen_height or self.trajectory - game.ball.radius <= 0:
                     temp_ball_speed_y *= -1
                 self.trajectory += temp_ball_speed_y
+        pygame.draw.circle(game.screen, 0x00ffff, (self.platform_x, self.trajectory), 5)
 
     def move(self):
-        platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
         platform_y = game.platform1.y + (game.platform_height / 2)
         distance = (self.trajectory - platform_y)
-        time = ((platform_x - game.ball.x) / game.ball.speed_x)
+        time = ((self.platform_x - game.ball.x) / game.ball.speed_x)
         if game.ball.speed_x > 0:
             speed = distance // time
         else:
@@ -203,8 +203,8 @@ class Game:
 
 if __name__ == '__main__':
     game = Game(50, 10, 100, 60)
-    bot = JameyBot()
     game.setup()
+    bot = JameyBot()
     while True:
         game.screen.fill(0x000000)
         for event in pygame.event.get():
