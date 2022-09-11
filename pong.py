@@ -233,8 +233,8 @@ if __name__ == '__main__':
                 sys.exit()
             else:
                 game.control()
+        game.move()
         bot.predict_trajectory()
         bot.move()
-        game.move()
         game.display()
         game.tick()
