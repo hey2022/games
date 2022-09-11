@@ -67,34 +67,37 @@ class Ball:
         return (self.x * self.x + self.y * self.y) ** 0.5
 
     def check_collision(self):
-        is_b = 0
+        is_bounce = False
+        # collide with left platform
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
             self.speed_y = game.platform.velocity // 5 + self.speed_y / 1.05
             self.rotate = -game.platform.velocity + self.rotate / 2
-            is_b = 1
+            is_bounce = True
 
         elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
             self.speed_y = game.platform1.velocity // 5 + self.speed_y / 1.05
             self.rotate = game.platform1.velocity + self.rotate / 2
-            is_b = 1
-
+            is_bounce = True
             pass
         if self.y - self.radius <= 0:
             self.speed_y *= -1
-            is_b = 1
+            is_bounce = True
+        # collide with bottom wall
         if self.y + self.radius >= game.screen_height:
             self.speed_y *= -1
-            is_b = 1
-        if self.x + self.radius >= game.screen_length:
+            is_bounce = True
+        # reaches beyond the platform
+        if self.x - self.radius >= game.screen_length:
             game.score[0] += 1
             game.setup()
         if self.x - self.radius <= 0:
             game.score[1] += 1
             game.setup()
             pass
-        if is_b != 0:
+        # if is_bounce just collided with something
+        if is_bounce:
             self.rotate /= 1.3
 
 
