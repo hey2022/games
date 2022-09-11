@@ -188,7 +188,7 @@ class Game:
                     sys.exit()
 
     def display_score(self):
-        score_box = self.small.render(f"{self.score[0]} : {self.score[1]}", True, 0xffffff00)
+        score_box = self.small.render(f"{self.score[0]} : {self.score[1]}", True, 0xffffffff)
         score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 8))
         self.screen.blit(score_box, score_rect)
 
