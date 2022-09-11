@@ -39,24 +39,27 @@ class JameyBot:
             speed = -game.platform_speed
         game.platform1.velocity = speed
 
+
 class DerekBot:
     def __init__(self):
         self.plat1x = game.screen_length - game.gap - game.platform_length - game.ball.radius
         self.platx = game.gap + game.platform_length + game.ball.radius
-        self.dirct = game.screen_height - game.platform_height/2
+        self.dirct = game.screen_height - game.platform_height / 2
         self.stage = 0
-    def predict1(self,x,y,spex,spey):
-        if(spex>0):
+
+    def predict1(self, x, y, spex, spey):
+        if spex > 0:
             self.stage = 0
-        while(x>self.platx and spex<0):
+        while x > self.platx and spex < 0:
             if y - game.ball.radius <= 0:
                 spey *= -1
             if y + game.ball.radius >= game.screen_height:
                 spey *= -1
                 pass
-            x+=spex
-            y+=spey
+            x += spex
+            y += spey
         self.dirct = y
+
     def move(self):
         if abs(game.platform.y + game.platform_height // 2 - self.dirct) < game.platform_speed:
             game.platform.velocity = 0
