@@ -48,7 +48,7 @@ class Ball:
         self.y = y
         self.radius = radius
         self.speed_x = (1 - random.randint(0, 1) * 2) * game.ball_speed
-        self.speed_y = 0
+        self.speed_y = random.randint(-game.ball_speed, game.ball_speed)
         self.rotate_help = 0
 
     def move(self):
