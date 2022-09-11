@@ -21,7 +21,6 @@ class JameyBot:
                 if self.trajectory + game.ball.radius >= game.screen_height and temp_ball_speed_y > 0 or self.trajectory - game.ball.radius <= 0 and temp_ball_speed_y < 0:
                     temp_ball_speed_y *= -1
                 self.trajectory += temp_ball_speed_y
-        pygame.draw.circle(game.screen, 0x00ffff, (self.platform_x, self.trajectory), 5)
 
     # move to the predicted trajectory in a "smooth way"
     def move(self):
