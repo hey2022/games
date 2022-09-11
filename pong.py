@@ -60,6 +60,9 @@ class Ball:
             self.speed_x = self.min_speed
         if 0 >= self.speed_x > -self.min_speed:
             self.speed_x = -self.min_speed
+        self.x += self.speed_x
+        self.y += self.speed_y
+        self.check_collision()
 
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
@@ -98,7 +101,7 @@ class Ball:
         if self.x - self.radius >= game.screen_length:
             game.score[0] += 1
             game.setup()
-        if self.x - self.radius <= 0:
+        if self.x + self.radius <= 0:
             game.score[1] += 1
             game.setup()
             pass
