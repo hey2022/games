@@ -28,7 +28,7 @@ class JameyBot:
         distance = (self.trajectory - platform_y)
         time = ((self.platform_x - game.ball.x) / game.ball.speed_x)
         # calculate the speed the platform needs to move
-        if game.ball.speed_x > 0:
+        if time > 0:
             speed = distance / time
         else:
             speed = distance
