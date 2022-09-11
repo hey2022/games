@@ -135,7 +135,7 @@ class Game:
     small = pygame.font.SysFont("Consolas", screen_length // 25)
     score = [0, 0]
 
-    def __init__(self, gap, platform_length, platform_height, speed):
+    def __init__(self, gap, platform_length, platform_height, speed, win_point):
         self.ball = None
         self.platform = None
         self.platform1 = None
@@ -145,8 +145,11 @@ class Game:
         self.speed = speed
         self.platform_speed = 10
         self.ball_speed = 10
+        self.win_point = win_point
 
     def setup(self):
+        if self.score[0] >= self.win_point or self.score[1] >= self.win_point:
+            self.game_over()
         self.platform = Platform(self.gap, self.platform_length, self.platform_height)
         self.platform1 = Platform(game.screen_length - self.platform_length - self.gap, self.platform_length,
                                   self.platform_height)
@@ -173,7 +176,8 @@ class Game:
                 self.platform1.velocity = 0
 
     def game_over(self):
-        text = self.large.render("Game Over", True, 0x99ffcc00)
+        self.display()
+        text = self.large.render("Game Over", True, 0xffffffff)
         text_rect = text.get_rect(center=(self.screen_length // 2, self.screen_height // 2))
         self.screen.blit(text, text_rect)
         pygame.display.flip()
@@ -205,7 +209,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(50, 10, 100, 60)
+    game = Game(50, 10, 100, 60, 11)
     game.setup()
     bot = JameyBot()
     while True:
