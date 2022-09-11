@@ -6,13 +6,13 @@ import pygame
 
 class JameyBot:
     def __init__(self):
-        self.trajectory = game.screen_height // 2
+        self.trajectory = game.screen_height / 2
         self.platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
 
     # predict y coordinate of the ball when it reaches the platform
     def predict_trajectory(self):
         if game.ball.speed_x <= 0:
-            self.trajectory = game.screen_height // 2
+            self.trajectory = game.screen_height / 2
         else:
             self.trajectory = game.ball.y
             temp_ball_speed_y = game.ball.speed_y
@@ -30,7 +30,7 @@ class JameyBot:
         time = ((self.platform_x - game.ball.x) / game.ball.speed_x)
         # calculate the speed the platform needs to move
         if game.ball.speed_x > 0:
-            speed = distance // time
+            speed = distance / time
         else:
             speed = distance
         # prevents platform from move past max speed
@@ -79,14 +79,14 @@ class Ball:
         # collide with left platform
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
-            self.speed_y = game.platform.velocity // 5 + self.speed_y / 1.05
+            self.speed_y = game.platform.velocity / 5 + self.speed_y / 1.05
             self.rotate = -game.platform.velocity + self.rotate / 2
             is_bounce = True
 
         # collide with right platform
         elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
-            self.speed_y = game.platform1.velocity // 5 + self.speed_y / 1.05
+            self.speed_y = game.platform1.velocity / 5 + self.speed_y / 1.05
             self.rotate = game.platform1.velocity + self.rotate / 2
             is_bounce = True
             pass
@@ -116,7 +116,7 @@ class Platform:
 
     def __init__(self, x, length, height):
         self.x = x
-        self.y = game.screen_height // 2 - game.platform_height // 2
+        self.y = game.screen_height / 2 - game.platform_height / 2
         self.length = length
         self.height = height
 
@@ -199,7 +199,7 @@ class Game:
     def game_over(self):
         self.display()
         text = self.large.render("Game Over", True, 0xffffffff)
-        text_rect = text.get_rect(center=(self.screen_length // 2, self.screen_height // 2))
+        text_rect = text.get_rect(center=(self.screen_length / 2, self.screen_height / 2))
         self.screen.blit(text, text_rect)
         pygame.display.flip()
         while True:
@@ -210,7 +210,7 @@ class Game:
 
     def display_score(self):
         score_box = self.small.render(f"{self.score[0]} : {self.score[1]}", True, 0xffffffff)
-        score_rect = score_box.get_rect(center=(self.screen_length // 2, self.screen_height // 8))
+        score_rect = score_box.get_rect(center=(self.screen_length / 2, self.screen_height / 8))
         self.screen.blit(score_box, score_rect)
 
     def move(self):
