@@ -9,6 +9,7 @@ class JameyBot:
         self.trajectory = game.screen_height // 2
         self.platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
 
+    # predict y coordinate of the ball when it reaches the platform
     def predict_trajectory(self):
         if game.ball.speed_x <= 0:
             self.trajectory = game.screen_height // 2
@@ -21,14 +22,17 @@ class JameyBot:
                 self.trajectory += temp_ball_speed_y
         pygame.draw.circle(game.screen, 0x00ffff, (self.platform_x, self.trajectory), 5)
 
+    # move to the predicted trajectory in a "smooth way"
     def move(self):
         platform_y = game.platform1.y + (game.platform_height / 2)
         distance = (self.trajectory - platform_y)
         time = ((self.platform_x - game.ball.x) / game.ball.speed_x)
+        # calculate the speed the platform needs to move
         if game.ball.speed_x > 0:
             speed = distance // time
         else:
             speed = distance
+        # prevents platform from move past max speed
         if speed > game.platform_speed:
             speed = game.platform_speed
         elif speed < -game.platform_speed:
@@ -48,11 +52,10 @@ class Ball:
         self.rotate_help = 0
 
     def move(self):
-        self.x += self.speed_x
-        self.y += self.speed_y
+        # prevents the speed_x ever from being lower than half of the speed_y
         if abs(self.speed_x) < abs(self.speed_y / 2):
             self.speed_x *= 1.1
-        self.check_collision()
+        # prevents speed_x from going below min_speed
         if 0 < self.speed_x < self.min_speed:
             self.speed_x = self.min_speed
         if 0 >= self.speed_x > -self.min_speed:
@@ -66,6 +69,7 @@ class Ball:
     def get_v(self):
         return (self.x * self.x + self.y * self.y) ** 0.5
 
+    # collision physics
     def check_collision(self):
         is_bounce = False
         # collide with left platform
@@ -75,12 +79,14 @@ class Ball:
             self.rotate = -game.platform.velocity + self.rotate / 2
             is_bounce = True
 
+        # collide with right platform
         elif game.platform1.x <= self.x + self.radius <= game.platform1.x + game.platform_length and game.platform1.y - self.radius < self.y < game.platform1.y + game.platform1.height + self.radius:
             self.speed_x *= -1
             self.speed_y = game.platform1.velocity // 5 + self.speed_y / 1.05
             self.rotate = game.platform1.velocity + self.rotate / 2
             is_bounce = True
             pass
+        # collide with top wall
         if self.y - self.radius <= 0:
             self.speed_y *= -1
             is_bounce = True
@@ -117,6 +123,7 @@ class Platform:
     def draw(self):
         pygame.draw.rect(game.screen, 0xffffff, pygame.Rect(self.x, self.y, self.length, self.height))
 
+    # prevents platform from going outside the screen
     def check_collision(self):
         if self.y <= 0:
             self.y = 0
@@ -147,6 +154,7 @@ class Game:
         self.ball_speed = 10
         self.win_point = win_point
 
+    # called when a point is scored and resets to the initial state
     def setup(self):
         if self.score[0] >= self.win_point or self.score[1] >= self.win_point:
             self.game_over()
@@ -155,6 +163,7 @@ class Game:
                                   self.platform_height)
         self.ball = Ball(game.screen_length // 2, game.screen_height // 2, 5)
 
+    # control platform velocity with keyboard input
     def control(self):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
