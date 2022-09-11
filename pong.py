@@ -17,7 +17,7 @@ class JameyBot:
             self.trajectory = game.ball.y
             temp_ball_speed_y = game.ball.speed_y
             for i in range(game.ball.x, self.platform_x + 1, game.ball.speed_x):
-                if self.trajectory + game.ball.radius >= game.screen_height or self.trajectory - game.ball.radius <= 0:
+                if self.trajectory + game.ball.radius >= game.screen_height and temp_ball_speed_y > 0 or self.trajectory - game.ball.radius <= 0 and temp_ball_speed_y < 0:
                     temp_ball_speed_y *= -1
                 self.trajectory += temp_ball_speed_y
         pygame.draw.circle(game.screen, 0x00ffff, (self.platform_x, self.trajectory), 5)
