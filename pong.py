@@ -178,6 +178,14 @@ class Game:
                 self.platform1.velocity = -self.platform_speed
             if event.key == pygame.K_DOWN:
                 self.platform1.velocity = self.platform_speed
+            if event.key == pygame.K_0:
+                self.speed = 0
+            if event.unicode == "+" and event.key == 61:
+                self.speed += 5
+            if event.key == pygame.K_MINUS:
+                self.speed -= 5
+                if self.speed <= 0:
+                    self.speed = 5
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
                 self.platform.velocity = 0
