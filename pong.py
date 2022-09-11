@@ -90,11 +90,11 @@ class Ball:
             is_bounce = True
             pass
         # collide with top wall
-        if self.y - self.radius <= 0:
+        if self.y - self.radius <= 0 and self.speed_y < 0:
             self.speed_y *= -1
             is_bounce = True
         # collide with bottom wall
-        if self.y + self.radius >= game.screen_height:
+        if self.y + self.radius >= game.screen_height and self.speed_y > 0:
             self.speed_y *= -1
             is_bounce = True
         # reaches beyond the platform
