@@ -115,7 +115,7 @@ class Platform:
 
     def __init__(self, x, length, height):
         self.x = x
-        self.y = game.screen_height / 2 - game.platform_height / 2
+        self.y = game.screen_height / 2 - height / 2
         self.length = length
         self.height = height
 
