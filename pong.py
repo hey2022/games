@@ -261,6 +261,7 @@ if __name__ == '__main__':
     game = Game(50, 10, 100, 60, 11)
     game.setup()
     bot = JameyBot()
+    bot1 = DerekBot()
     while True:
         game.screen.fill(0x000000)
         for event in pygame.event.get():
@@ -272,5 +273,7 @@ if __name__ == '__main__':
         game.move()
         bot.predict_trajectory()
         bot.move()
+        bot1.predict1(game.ball.x, game.ball.y, game.ball.speed_x, game.ball.speed_y)
+        bot1.move()
         game.display()
         game.tick()
