@@ -38,24 +38,28 @@ class JameyBot:
         elif speed < -game.platform_speed:
             speed = -game.platform_speed
         game.platform1.velocity = speed
+
+
 class DerekBot:
     def __init__(self):
         self.plat1x = game.screen_length - game.gap - game.platform_length - game.ball.radius
         self.platx = game.gap + game.platform_length + game.ball.radius
-        self.dirct = game.screen_height - game.platform_height/2
+        self.dirct = game.screen_height - game.platform_height / 2
         self.stage = 0
         self.preb = DerekBot1()
+
     def predict(self):
-        if(game.ball.speed_x<0):
-            self.dirct = self.preb.predict1(game.ball.x,game.ball.y,game.ball.speed_x,game.ball.speed_y)[1]
+        if game.ball.speed_x < 0:
+            self.dirct = self.preb.predict1(game.ball.x, game.ball.y, game.ball.speed_x, game.ball.speed_y)[1]
         else:
-            psi = self.preb.predict1(game.ball.x,game.ball.y,game.ball.speed_x,game.ball.speed_y)
-            psi[2]*=-1
+            psi = self.preb.predict1(game.ball.x, game.ball.y, game.ball.speed_x, game.ball.speed_y)
+            psi[2] *= -1
             sy1 = game.platform.velocity / 5 + psi[3] / 1.05
             sy2 = -game.platform.velocity / 5 + psi[3] / 1.05
-            y1 = self.preb.predict1(psi[0],psi[1],psi[2],sy1)[1]
-            y2 = self.preb.predict1(psi[0],psi[1],psi[2],sy2)[1]
-            self.dirct = (y1+y2)/2
+            y1 = self.preb.predict1(psi[0], psi[1], psi[2], sy1)[1]
+            y2 = self.preb.predict1(psi[0], psi[1], psi[2], sy2)[1]
+            self.dirct = (y1 + y2) / 2
+
     def move(self):
         if abs(game.platform.y + game.platform_height // 2 - self.dirct) < game.platform_speed:
             game.platform.velocity = 0
@@ -66,26 +70,29 @@ class DerekBot:
             game.platform.velocity = -game.platform_speed
         else:
             game.platform.velocity = 0
+
+
 class DerekBot1:
     def __init__(self):
         self.plat1x = game.screen_length - game.gap - game.platform_length - game.ball.radius
         self.platx = game.gap + game.platform_length + game.ball.radius
-    def predict1(self, x,y,spex,spey):
-        while(x>self.platx and spex<0):
+
+    def predict1(self, x, y, spex, spey):
+        while x > self.platx and spex < 0:
             if y - game.ball.radius <= 0:
                 spey *= -1
             if y + game.ball.radius >= game.screen_height:
                 spey *= -1
-            x+=spex
-            y+=spey
-        while(x<self.plat1x and spex>0):
+            x += spex
+            y += spey
+        while x < self.plat1x and spex > 0:
             if y - game.ball.radius <= 0:
                 spey *= -1
             if y + game.ball.radius >= game.screen_height:
                 spey *= -1
-            x+=spex
-            y+=spey
-        a = [x,y,spex,spey]
+            x += spex
+            y += spey
+        a = [x, y, spex, spey]
         return a
 
 
@@ -97,7 +104,7 @@ class Ball:
         self.y = y
         self.radius = radius
         self.speed_x = (1 - random.randint(0, 1) * 2) * game.ball_speed
-        self.speed_y = random.randint(-game.ball_speed/2, game.ball_speed/2)
+        self.speed_y = random.randint(-game.ball_speed // 2, game.ball_speed // 2)
         self.rotate_help = 0
 
     def move(self):
@@ -115,11 +122,11 @@ class Ball:
 
     def draw(self):
         pygame.draw.circle(game.screen, 0xffffff, (self.x, self.y), self.radius)
-        pygame.draw.aaline(game.screen, 0xffffff, (self.x, self.y),(self.x + self.speed_x * 3, self.y + self.speed_y * 3))
+        pygame.draw.aaline(game.screen, 0xffffff, (self.x, self.y),
+                           (self.x + self.speed_x * 3, self.y + self.speed_y * 3))
 
     # collision physics
     def check_collision(self):
-        is_bounce = False
         # collide with left platform
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
@@ -190,12 +197,13 @@ class Game:
     large = pygame.font.SysFont("Consolas", screen_length // 10)
     small = pygame.font.SysFont("Consolas", screen_length // 25)
     score = [0, 0]
+
     def __init__(self, gap, platform_length, platform_height, speed, win_point):
         self.ball = None
         self.platform = None
         self.platform1 = None
         self.gap = gap
-        self.platform_length = platform_length*2
+        self.platform_length = platform_length * 2
         self.platform_height = platform_height
         self.speed = speed
         self.platform_speed = 12
@@ -268,8 +276,10 @@ class Game:
         self.ball.draw()
         self.display_score()
         pygame.display.flip()
+
     def tick(self):
         self.clock.tick(self.speed)
+
 
 if __name__ == '__main__':
     game = Game(50, 10, 100, 100, 11)
