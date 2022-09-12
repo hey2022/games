@@ -61,11 +61,14 @@ class DerekBot:
                 self.ballv = 1
             else:
                 self.ballv = -1
-            if abs(y1-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
+            ftst = -9999999
+            if abs(y1-game.platform1.y-game.platform_height/2)-game.platform_height/2 - abs((self.platx-self.plat1x)/psi[2]*game.platform_speed) > ftst:
                 self.ballv = 1
-            if abs(y2-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
+                ftst = abs(y1-game.platform1.y-game.platform_height/2)-game.platform_height/2 - abs((self.platx-self.plat1x)/psi[2]*game.platform_speed)
+            if abs(y2-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed) > ftst:
                 self.ballv = -1
-            if abs(y3-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
+                ftst = abs(y2-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed)
+            if abs(y3-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed) > ftst:
                 self.ballv = 0
             self.dirct = psi[1]
         else:
@@ -127,7 +130,7 @@ class Ball:
         self.y = y
         self.radius = radius
         self.speed_x = (1 - random.randint(0, 1) * 2) * game.ball_speed
-        self.speed_y = random.randint(-game.ball_speed // 2, game.ball_speed // 2)
+        self.speed_y = random.randint(-game.ball_speed // 3, game.ball_speed // 3)
         self.rotate_help = 0
 
     def move(self):
