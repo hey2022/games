@@ -5,39 +5,38 @@ import pygame
 
 
 class JameyBot:
+    trajectory = None
+
     def __init__(self):
-        self.trajectory = game.screen_height / 2
         self.platform_x = game.screen_length - game.gap - game.platform_length - game.ball.radius
 
     # predict y coordinate of the ball when it reaches the platform
     def predict_trajectory(self):
-        if game.ball.speed_x <= 0:
-            self.trajectory = game.screen_height / 2
-        else:
-            self.trajectory = game.ball.y
-            temp_ball_speed_y = game.ball.speed_y
-            for i in range(game.ball.x, self.platform_x + 1, game.ball.speed_x):
-                pygame.draw.circle(game.screen, 0x00ffff, (i, self.trajectory), 1)
-                if self.trajectory + game.ball.radius >= game.screen_height and temp_ball_speed_y > 0 or self.trajectory - game.ball.radius <= 0 and temp_ball_speed_y < 0:
-                    temp_ball_speed_y *= -1
-                self.trajectory += temp_ball_speed_y
+        self.trajectory = game.ball.y
+        temp_ball_x = game.ball.x
+        temp_ball_speed_y = game.ball.speed_y
+        temp_ball_speed_x = game.ball.speed_x
+        while 0 <= temp_ball_x + game.ball.radius < self.platform_x:
+            pygame.draw.circle(game.screen, 0x00ffff, (temp_ball_x, self.trajectory), 1)
+            if game.platform.x <= temp_ball_x - game.ball.radius <= game.platform.x + game.platform_length:
+                temp_ball_speed_x *= -1
+                temp_ball_speed_y /= 1.05
+            if self.trajectory + game.ball.radius >= game.screen_height and temp_ball_speed_y > 0 or self.trajectory - game.ball.radius <= 0 and temp_ball_speed_y < 0:
+                temp_ball_speed_y *= -1
+            self.trajectory += temp_ball_speed_y
+            temp_ball_x += temp_ball_speed_x
 
     # move to the predicted trajectory in a "smooth way"
     def move(self):
-        platform_y = game.platform1.y + (game.platform_height / 2)
-        distance = (self.trajectory - platform_y)
-        time = ((self.platform_x - game.ball.x) / game.ball.speed_x)
-        # calculate the speed the platform needs to move
-        if game.ball.speed_x > 0:
-            speed = distance / time
+        if abs(game.platform1.y + game.platform_height / 2 - self.trajectory) < game.platform_speed:
+            game.platform1.velocity = 0
+            return 0
+        if game.platform1.y + game.platform_height / 2 < self.trajectory:
+            game.platform1.velocity = game.platform_speed
+        elif game.platform1.y + game.platform_height / 2 > self.trajectory:
+            game.platform1.velocity = -game.platform_speed
         else:
-            speed = distance
-        # prevents platform from move past max speed
-        if speed > game.platform_speed:
-            speed = game.platform_speed
-        elif speed < -game.platform_speed:
-            speed = -game.platform_speed
-        game.platform1.velocity = speed
+            game.platform1.velocity = 0
 
 
 class DerekBot:
