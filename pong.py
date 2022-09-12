@@ -47,7 +47,7 @@ class DerekBot:
         self.stage = 0
         self.preb = DerekBot1()
         self.ballv = 0
-
+        
     def predict(self):
         if game.ball.speed_x < 0:
             psi = self.preb.predict1(game.ball.x, game.ball.y, game.ball.speed_x, game.ball.speed_y)
@@ -61,15 +61,12 @@ class DerekBot:
                 self.ballv = 1
             else:
                 self.ballv = -1
-            if abs(y1 - game.platform1.y - game.platform_height / 2) - game.platform_height / 2 > abs(
-                    (self.platx - self.plat1x) / psi[2] * game.platform_speed):
+            if abs(y1-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
                 self.ballv = 1
-            if abs(y1 - game.platform1.y - game.platform_height / 2) - game.platform_height / 2 > abs(
-                    (self.platx - self.plat1x) / psi[2] * game.platform_speed):
-                self.ballv = 0
-            if abs(y1 - game.platform1.y - game.platform_height / 2) - game.platform_height / 2 > abs(
-                    (self.platx - self.plat1x) / psi[2] * game.platform_speed):
+            if abs(y2-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
                 self.ballv = -1
+            if abs(y3-game.platform1.y-game.platform_height/2)-game.platform_height/2 > abs((self.platx-self.plat1x)/psi[2]*game.platform_speed):
+                self.ballv = 0
             self.dirct = psi[1]
         else:
             psi = self.preb.predict1(game.ball.x, game.ball.y, game.ball.speed_x, game.ball.speed_y)
@@ -80,15 +77,15 @@ class DerekBot:
             y1 = self.preb.predict1(psi[0], psi[1], psi[2], sy1)[1]
             y2 = self.preb.predict1(psi[0], psi[1], psi[2], sy2)[1]
             y3 = self.preb.predict1(psi[0], psi[1], psi[2], sy3)[1]
-            a = [y1, y2, y3]
+            a = [y1,y2,y3]
             a.sort()
             self.dirct = (a[0] + a[2]) / 2
 
     def move(self):
         if abs(game.platform.y + game.platform_height / 2 - self.dirct) < game.platform_speed:
             game.platform.velocity = 0
-            if game.ball.x + game.ball.speed_x <= self.platx * 2:
-                game.platform.velocity = game.platform_speed * self.ballv
+            if(game.ball.x+game.ball.speed_x <= self.platx*2):
+                game.platform.velocity = game.platform_speed*self.ballv
             return 0
         if game.platform.y + game.platform_height / 2 < self.dirct:
             game.platform.velocity = game.platform_speed
@@ -308,7 +305,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(50, 10, 100, 100, 11)
+    game = Game(50, 10, 100, 100, 128)
     game.setup()
     bot = JameyBot()
     bot1 = DerekBot()
