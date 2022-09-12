@@ -130,9 +130,9 @@ class Ball:
         # collide with left platform
         if game.platform.x <= self.x - self.radius <= game.platform.x + game.platform_length and game.platform.y - self.radius < self.y < game.platform.y + game.platform.height + self.radius:
             self.speed_x *= -1
-            if game.platform1.velocity > 0:
+            if game.platform.velocity > 0:
                 self.speed_y = game.platform_speed / 5 + self.speed_y / 1.05
-            elif game.platform1.velocity < 0:
+            elif game.platform.velocity < 0:
                 self.speed_y = -game.platform_speed / 5 + self.speed_y / 1.05
             else:
                 self.speed_y /= 1.05
